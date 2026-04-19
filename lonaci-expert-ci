@@ -53,6 +53,7 @@ body{font-family:system-ui,sans-serif;background:var(--dark);color:var(--text);m
 .grille-result{background:var(--dark3);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:16px;display:none;}
 .grille-balls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0;}
 .grille-ball{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#8B6914);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#000;}
+.grille-type{text-align:center;font-size:12px;color:var(--gold);font-weight:700;margin-bottom:4px;}
 .ai-chat{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;min-height:220px;}
 .ai-msg{padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.5;max-width:90%;}
 .ai-msg.assistant{background:var(--dark3);border:1px solid var(--border);align-self:flex-start;}
@@ -69,7 +70,7 @@ body{font-family:system-ui,sans-serif;background:var(--dark);color:var(--text);m
 .top-balls{display:flex;gap:8px;flex-wrap:wrap;}
 .top-ball{width:40px;height:40px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;line-height:1.1;}
 </style>
-  </head><body>
+</head><body>
 <div class="header">
   <div class="header-title">🎯 LONACI EXPERT CI</div>
   <div class="header-sub">Analyse · Grilles · Prédictions IA</div>
@@ -153,16 +154,19 @@ body{font-family:system-ui,sans-serif;background:var(--dark);color:var(--text);m
     <div class="gen-opt-title">🎲 Aléatoire pur</div>
     <div class="gen-opt-desc">Tirage aléatoire 1–90</div>
   </div>
-  <div class="section-label">Nombre de numéros</div>
+  <div class="section-label">Type de pari</div>
   <select class="form-input" id="grilleSize" style="margin-bottom:12px;">
-    <option value="5">5 numéros</option>
-    <option value="6">6 numéros</option>
-    <option value="7">7 numéros</option>
-    <option value="10">10 numéros</option>
+    <option value="2">Couplé (2 numéros)</option>
+    <option value="3">Tiercé (3 numéros)</option>
+    <option value="4">Quarté (4 numéros)</option>
+    <option value="5">Quinté (5 numéros)</option>
+    <option value="6">Sixto (6 numéros)</option>
+    <option value="7">Septième (7 numéros)</option>
+    <option value="10">Super 10 (10 numéros)</option>
   </select>
   <button class="btn btn-purple" id="btnGenerate">🎲 Générer ma grille</button>
   <div class="grille-result" id="grilleResult">
-    <div class="section-label" style="margin:0 0 8px;">Votre grille</div>
+    <div class="grille-type" id="grilleType"></div>
     <div class="grille-balls" id="grilleBalls"></div>
     <button class="btn btn-green" id="btnRegen" style="margin-top:8px;">🔄 Nouvelle grille</button>
   </div>
@@ -178,6 +182,7 @@ body{font-family:system-ui,sans-serif;background:var(--dark);color:var(--text);m
   </div>
 </div><script>
 const NAMES={rev:'Réveil',eme:'Émergence',fort:'Fortune',secu:'Sécurité',kado:'Kado',bar:'Baraka',sou:'Soutra',awo:'Awoulaba',esp:'Espoir',star:'Star',mas:'Massa',bon:'Bonheur',starp:'Star Plus',expr:'Loto Express',mon:'Monney',dia:'Diamant',or:'Or',pla:'Platine',vip:'VIP',prem:'Premier',sup:'Super'};
+const TYPES={2:'Couplé',3:'Tiercé',4:'Quarté',5:'Quinté',6:'Sixto',7:'Septième',10:'Super 10'};
 let currentDraw='rev', strategy='hot';
 
 function getH(d){return JSON.parse(localStorage.getItem('lnc_'+d)||'[]');}
@@ -284,6 +289,7 @@ function genGrille(){
   else if(strategy==='mixed') pool=[...sorted.slice(0,15),...sorted.slice(-15)].map(([n])=>parseInt(n));
   else pool=Array.from({length:90},(_,i)=>i+1);
   const picked=pool.sort(()=>Math.random()-.5).slice(0,size).sort((a,b)=>a-b);
+  document.getElementById('grilleType').textContent=TYPES[size]+' — '+NAMES[currentDraw];
   document.getElementById('grilleBalls').innerHTML=picked.map(n=>`<div class="grille-ball">${n}</div>`).join('');
   document.getElementById('grilleResult').style.display='block';
 }
